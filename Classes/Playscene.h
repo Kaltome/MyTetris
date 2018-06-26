@@ -5,18 +5,19 @@
 #include "Shape.h"
 USING_NS_CC;
 
-static double downspeed = 1.8;
+static double downspeed;
+static double orispeed;
 
 class Playscene : public Scene{
 public:
 	CREATE_FUNC(Playscene);
 	virtual bool init();
 	virtual void update(float mt);
+	static void getspeed(double i);
 	void controlkeyevent();
 	int  addscore();
 	void cleanrow(int crow);
 	void reset();
-	void resetisshow();
 	void rotate();					//旋转图形
 	bool checkhit();
 	void checkleft();				//检查与左边墙壁有无碰撞
@@ -37,7 +38,6 @@ private:
 	int controly = 0;				//控制方块下落
 	double time = 0;
 	double pretime = 0;
-	double downspeed = 1.8;
 
 	Shape cshape; int cnum;			//控制的方块
 	int snum;						//显示的下一个方块

@@ -16,6 +16,10 @@ bool Choose::init() {
 
 	auto size = Director::getInstance()->getVisibleSize();
 
+	auto ctitle = Sprite::create("Title.png");
+	ctitle->setPosition(Vec2(size.width / 2, size.height / 2 + 150));
+	this->addChild(ctitle);
+
 	auto button1 = ui::Button::create("Naive.png", "Naive-1.png", "Naive-1.png");
 	button1->setPosition(Vec2(size.width / 2, size.height / 2 - 75));
 	button1->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {

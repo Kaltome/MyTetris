@@ -6,9 +6,14 @@
 using namespace cocos2d;
 using namespace std;
 
+void Playscene::getspeed(double i) {
+	downspeed = i;
+	orispeed = i;
+}
+
 int  Playscene::addscore() {
 	if (time == 0) return 0;
-	return cleanrows / time * 300 + 3;
+	return cleanrows / time * 150 + 1;
 }
 
 void Playscene::controlkeyevent() {
@@ -31,14 +36,12 @@ void Playscene::controlkeyevent() {
 	auto downmove = EventListenerKeyboard::create();
 	downmove->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event * event) {
 		if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
-			Sleep(100);
 			pretime = 0;
 			downspeed = speedup;
 		}
-
 	};
 	downmove->onKeyReleased = [&](EventKeyboard::KeyCode keyCode, Event * event) {
-		if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) downspeed = 1.8;
+		if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) downspeed = orispeed;
 	};
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(downmove, this);
 
@@ -82,7 +85,7 @@ void Playscene::reset() {
 		for (int j = 0; j < 10; j++) {
 			if (isshow[i][j]) {
 				Sleep(200);
-				Gameoverscene::getfinalscore(score);
+				Gameoverscene::getfinal(score, orispeed);
 				Director::getInstance()->replaceScene(Gameoverscene::create());
 			}
 		}
@@ -93,14 +96,13 @@ void Playscene::reset() {
 
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			if (cshape.shape[snum][i][j]) next[i][j]->setVisible(200);
+			if (cshape.shape[snum][i][j] == 1) next[i][j]->setVisible(180);
 			else next[i][j]->setVisible(0);
 		}
 	}
 
 	controlx = 4;
 	controly = 0;
-
 }
 
 bool Playscene::checkhit() {
@@ -187,14 +189,6 @@ void Playscene::rotate() {
 	if (checkhit()) cshape = copy;
 }
 
-void Playscene::resetisshow() {
-	for (int i = 4; i < 24; i++) {
-		for (int j = 0; j < 12; j++) {
-			isshow[i][j] = 0;
-		}
-	}
-}
-
 bool Playscene::init() {
 
 	cnum = CCRANDOM_0_1() * 7;
@@ -217,7 +211,7 @@ bool Playscene::init() {
 			square[i][j] = Sprite::create("squares.png");
 			square[i][j]->setAnchorPoint(Vec2(0, 0));
 			square[i][j]->setPosition(squarex, squarey);
-			this->addChild(square[i][j]);
+			this->addChild(square[i][j]);			
 			squarex += 36;
 		}
 		squarex = 112;
@@ -263,7 +257,6 @@ void Playscene::update(float mt) {
 	score += addscore();
 	scorelabel->setString("Score : " + to_string(score));
 
-
 	time += mt;
 	pretime += mt;
 	if (pretime * downspeed >= 1) {
@@ -274,7 +267,7 @@ void Playscene::update(float mt) {
 	for (int i = 4; i < 24; i++) {
 		for (int j = 0; j < 10; j++) {
 			if (isshow[i][j] == 0) square[i][j]->setOpacity(0);
-			if (isshow[i][j] == 1) square[i][j]->setOpacity(200);
+			if (isshow[i][j] == 1) square[i][j]->setOpacity(220);
 		}
 	}
 
