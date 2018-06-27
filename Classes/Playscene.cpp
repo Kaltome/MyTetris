@@ -2,6 +2,9 @@
 #include "cocos2d.h"
 #include "Shape.h"
 #include "Gameoverscene.h"
+#include "Hellotetris.h"
+#include "ui/Cocosgui.h"
+#include "Square.h"
 #include<string>
 using namespace cocos2d;
 using namespace std;
@@ -13,23 +16,31 @@ void Playscene::getspeed(double i) {
 
 int  Playscene::addscore() {
 	if (time == 0) return 0;
-	return cleanrows / time * 150 + 1;
+	return cplayer.cleanedrows / time * 150 + 1;
 }
 
 void Playscene::controlkeyevent() {
+	auto pausegame1 = EventListenerKeyboard::create();
+	pausegame1->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event * event) {
+		if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) ispause++;
+		if (ispause % 2) this->scheduleUpdate();
+		else this->unscheduleUpdate();
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(pausegame1, this);
+
 	auto leftmove = EventListenerKeyboard::create();
 	leftmove->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event * event) {
 		if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
-			controlx--;
-		if (checkhit()) controlx++;
+			cplayer.controlx--;
+		if (checkhit()) cplayer.controlx++;
 	};
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(leftmove, this);
 
 	auto rightmove = EventListenerKeyboard::create();
 	rightmove->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event * event) {
 		if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
-			controlx++;
-		if (checkhit()) controlx--;
+			cplayer.controlx++;
+		if (checkhit()) cplayer.controlx--;
 	};
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(rightmove, this);
 
@@ -54,10 +65,10 @@ void Playscene::controlkeyevent() {
 }
 
 void Playscene::cleanrow(int crow) {
-	cleanrows++;
+	cplayer.cleanedrows++;
 	for (int i = crow; i > 0; i--) {
 		for (int j = 0; j < 10; j++) {
-			isshow[i][j] = isshow[i - 1][j];
+			cplayer.isshow[i][j] = cplayer.isshow[i - 1][j];
 		}
 	}
 }
@@ -65,15 +76,15 @@ void Playscene::cleanrow(int crow) {
 void Playscene::reset() {
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			if (cshape.shape[cnum][i][j] == 1)
-			isshow[controly + i][controlx + j] = cshape.shape[cnum][i][j];
+			if (cplayer.shape[cplayer.cnum][i][j] == 1)
+				cplayer.isshow[cplayer.controly + i][cplayer.controlx + j] = cplayer.shape[cplayer.cnum][i][j];
 		}
 	}
 
 	for (int i = 23; i >= 0; i--) {
 		int numperrow = 0;
 		for (int j = 0; j < 10; j++) {
-			if (isshow[i][j] == 1) numperrow++;
+			if (cplayer.isshow[i][j] == 1) numperrow++;
 		}
 		if (numperrow == 10) {
 			cleanrow(i);
@@ -83,33 +94,33 @@ void Playscene::reset() {
 
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 10; j++) {
-			if (isshow[i][j]) {
+			if (cplayer.isshow[i][j]) {
 				Sleep(200);
-				Gameoverscene::getfinal(score, orispeed);
+				Gameoverscene::getfinal(cplayer.score, orispeed);
 				Director::getInstance()->replaceScene(Gameoverscene::create());
 			}
 		}
 	}
 
-	cnum = snum;
-	snum = CCRANDOM_0_1() * 7;
+	cplayer.cnum = cplayer.snum;
+	cplayer.snum = CCRANDOM_0_1() * 7;
 
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			if (cshape.shape[snum][i][j] == 1) next[i][j]->setVisible(180);
+			if (cplayer.shape[cplayer.snum][i][j] == 1) next[i][j]->setVisible(180);
 			else next[i][j]->setVisible(0);
 		}
 	}
 
-	controlx = 4;
-	controly = 0;
+	cplayer.controlx = 3;
+	cplayer.controly = 0;
 }
 
 bool Playscene::checkhit() {
 	int hit = 0;
 	for (int i = 3; i >= 0; i--) {
 		for (int j = 0; j < 4; j++) {
-			if (cshape.shape[cnum][i][j] == 1 && isshow[controly + i][controlx + j] == 1) {
+			if (cplayer.shape[cplayer.cnum][i][j] == 1 && cplayer.isshow[cplayer.controly + i][cplayer.controlx + j] == 1) {
 				hit = 1;
 			}
 		}
@@ -124,12 +135,12 @@ bool Playscene::checkdown() {
 
 	if (checkhit()) {
 		ishit = 1;
-		controly--;
+		cplayer.controly--;
 	}
 
 	for (int i = 3; i >= 0; i--) {
 		for (int j = 0; j < 4; j++) {
-			if (cshape.shape[cnum][i][j] == 1) {
+			if (cplayer.shape[cplayer.cnum][i][j] == 1) {
 				findend = 1;
 				break;
 			}
@@ -137,13 +148,13 @@ bool Playscene::checkdown() {
 		if (findend == 1) break;
 		downline++;
 	}
-	if (controly + 3 - downline >= 23) controly = 23 - 3 + downline;
+	if (cplayer.controly + 3 - downline >= 23) cplayer.controly = 23 - 3 + downline;
 
-	return (ishit|| controly == 23 - 3 + downline);
+	return (ishit|| cplayer.controly == 23 - 3 + downline);
 }
 
 void Playscene::checkup() {
-	if (controly < 0) controly = 0;
+	if (cplayer.controly < 0) cplayer.controly = 0;
 }
 
 void Playscene::checkleft() {
@@ -151,7 +162,7 @@ void Playscene::checkleft() {
 	for (int i = 0; i < 4; i++) {
 		int findend = 0;
 		for (int j = 0; j < 4; j++) {
-			if (cshape.shape[cnum][j][i] == 1) {
+			if (cplayer.shape[cplayer.cnum][j][i] == 1) {
 				findend = 1;
 				break;
 			}
@@ -159,7 +170,7 @@ void Playscene::checkleft() {
 		if (findend == 1)break;
 		leftline++;
 	}
-	if (controlx < 0 - leftline) controlx = 0 - leftline;
+	if (cplayer.controlx < 0 - leftline) cplayer.controlx = 0 - leftline;
 }
 
 void Playscene::checkright() {
@@ -167,7 +178,7 @@ void Playscene::checkright() {
 	for (int i = 3; i >= 0; i--) {
 		int findend = 0;
 		for (int j = 3; j >=0 ; j--) {
-			if (cshape.shape[cnum][j][i] == 1) {
+			if (cplayer.shape[cplayer.cnum][j][i] == 1) {
 				findend = 1;
 				break;
 			}
@@ -175,24 +186,25 @@ void Playscene::checkright() {
 		if (findend == 1)break;
 		rightline++;
 	}
-	if (controlx > 9 - 3 + rightline) controlx = 9 - 3 + rightline;
+	if (cplayer.controlx > 9 - 3 + rightline) cplayer.controlx = 9 - 3 + rightline;
 }
 
 void Playscene::rotate() {
-	Shape copy = cshape;
-	if (cnum == 6) return;
+	Ctrlsquare copy = cplayer;
+	if (cplayer.cnum == 6) return;
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
- 			cshape.shape[cnum][i][j] = copy.shape[cnum][3 - j][i];
+			cplayer.shape[cplayer.cnum][i][j] = copy.shape[cplayer.cnum][3 - j][i];
 		}
 	}
-	if (checkhit()) cshape = copy;
+	if (checkhit()) cplayer = copy;
 }
 
 bool Playscene::init() {
 
-	cnum = CCRANDOM_0_1() * 7;
-	snum = CCRANDOM_0_1() * 7;
+	cplayer.cnum = CCRANDOM_0_1() * 7;
+	cplayer.snum = CCRANDOM_0_1() * 7;
+
 
 	auto background = Sprite::create("BG.png");
 	if (background != nullptr) {
@@ -218,7 +230,7 @@ bool Playscene::init() {
 		squarey -= 36;
 	}
 
-	int showx = 624, showy = 384;
+	int showx = 656, showy = 448;
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
 			next[i][j] = Sprite::create("squares.png");
@@ -227,25 +239,36 @@ bool Playscene::init() {
 			this->addChild(next[i][j]);
 			showx += 36;
 		}
-		showx = 624;
+		showx = 656;
 		showy -= 36;
 	}
 
-	scorelabel = Label::create("Score : "+to_string(score), "Maiandra GD", 36);
-	scorelabel->setAnchorPoint(Vec2(0, 0));
-	scorelabel->setPosition(Vec2(624, 624));
-	this->addChild(scorelabel);
+	cplayer.scorelabel = Label::create("Score : "+to_string(cplayer.score), "Maiandra GD", 36);
+	cplayer.scorelabel->setAnchorPoint(Vec2(0, 0));
+	cplayer.scorelabel->setPosition(Vec2(648, 624));
+	this->addChild(cplayer.scorelabel);
 
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			if (cshape.shape[snum][i][j]) next[i][j]->setVisible(200);
+			if (cplayer.shape[cplayer.snum][i][j]) next[i][j]->setVisible(200);
 			else next[i][j]->setVisible(0);
 		}
 	}
 
 	controlkeyevent();
 
-
+	auto size = Director::getInstance()->getVisibleSize();
+	auto button4 = ui::Button::create("Back.png", "Back-1.png", "Back-1.png");
+	button4->setPosition(Vec2(size.width - button4->getCustomSize().width, 0 + button4->getCustomSize().height));
+	button4->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
+		switch (type) {
+		case ui::Widget::TouchEventType::ENDED: {
+			Director::getInstance()->replaceScene(Hellotetris::create());
+			break;
+		}
+		}
+	});
+	this->addChild(button4, 1);
 	
 	this->scheduleUpdate();
 
@@ -254,20 +277,20 @@ bool Playscene::init() {
 
 void Playscene::update(float mt) {
 
-	score += addscore();
-	scorelabel->setString("Score : " + to_string(score));
+	cplayer.score += addscore();
+	cplayer.scorelabel->setString("Score : " + to_string(cplayer.score));
 
 	time += mt;
 	pretime += mt;
 	if (pretime * downspeed >= 1) {
-		controly += pretime* downspeed;
+		cplayer.controly += pretime* downspeed;
 		pretime = 0;
 	}
 
 	for (int i = 4; i < 24; i++) {
 		for (int j = 0; j < 10; j++) {
-			if (isshow[i][j] == 0) square[i][j]->setOpacity(0);
-			if (isshow[i][j] == 1) square[i][j]->setOpacity(220);
+			if (cplayer.isshow[i][j] == 0) square[i][j]->setOpacity(0);
+			if (cplayer.isshow[i][j] == 1) square[i][j]->setOpacity(220);
 		}
 	}
 
@@ -278,8 +301,8 @@ void Playscene::update(float mt) {
 
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			if (j + controlx < 0 || j + controlx > 19||i + controly > 23) continue;
-			if (cshape.shape[cnum][i][j] == 1) square[controly+i][j+controlx]->setOpacity(200);
+			if (j + cplayer.controlx < 0 || j + cplayer.controlx > 19||i + cplayer.controly > 23) continue;
+			if (cplayer.shape[cplayer.cnum][i][j] == 1) square[cplayer.controly+i][j+ cplayer.controlx]->setOpacity(200);
 		}
 	}
 

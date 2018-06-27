@@ -1,6 +1,8 @@
 #include"cocos2d.h"
 #include"Choose.h"
 #include "Playscene.h"
+#include "Playscene2.h"
+#include "Chooseplayernum.h"
 #include "Hellotetris.h"
 #include "ui/Cocosgui.h"
 #include <string>
@@ -25,8 +27,9 @@ bool Choose::init() {
 	button1->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
 			case ui::Widget::TouchEventType::ENDED: {
-			Director::getInstance()->replaceScene(Playscene::create());
+			Director::getInstance()->replaceScene(Choosenum::create());
 			Playscene::getspeed(1);
+			Playscene2::getdspeed(1);
 			break; 
 			}
 		}
@@ -38,8 +41,9 @@ bool Choose::init() {
 	button2->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
 		case ui::Widget::TouchEventType::ENDED: {
-			Director::getInstance()->replaceScene(Playscene::create());
+			Director::getInstance()->replaceScene(Choosenum::create());
 			Playscene::getspeed(2);
+			Playscene2::getdspeed(2);
 			break;
 		}
 		}
@@ -51,13 +55,26 @@ bool Choose::init() {
 	button3->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
 		case ui::Widget::TouchEventType::ENDED: {
-			Director::getInstance()->replaceScene(Playscene::create());
+			Director::getInstance()->replaceScene(Choosenum::create());
 			Playscene::getspeed(3);
+			Playscene2::getdspeed(3);
 			break;
 		}
 		}
 	});
 	this->addChild(button3, 1);
+
+	auto button4 = ui::Button::create("Back.png", "Back-1.png", "Back-1.png");
+	button4->setPosition(Vec2(size.width - button4->getCustomSize().width, 0+ button4->getCustomSize().height ));
+	button4->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
+		switch (type) {
+		case ui::Widget::TouchEventType::ENDED: {
+			Director::getInstance()->replaceScene(Hellotetris::create());
+			break;
+		}
+		}
+	});
+	this->addChild(button4, 1);
 
 	return true;
 }

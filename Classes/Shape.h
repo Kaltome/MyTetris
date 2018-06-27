@@ -1,7 +1,7 @@
 #pragma once
 #ifndef __Shape_H__
 #define __Shape_H__
-#include "Playscene.h"
+
 
 class Shape {
 

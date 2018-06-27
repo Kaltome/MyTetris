@@ -41,6 +41,5 @@ ifstream inn("Scoreslist.txt", ifstream::in);
 	 });
 	 this->addChild(button2, 3);
 
-
 	 return true;
 }

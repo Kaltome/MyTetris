@@ -2,6 +2,7 @@
 #include"Gameoverscene.h"
 #include "Playscene.h"
 #include "Hellotetris.h"
+#include "ui/Cocosgui.h"
 #include <string>
 #include<fstream>
 #include<vector>
@@ -21,7 +22,7 @@ void Gameoverscene::output() {
 	}
 	scorelist.push_back(finalscore);
 	sort(scorelist.begin(), scorelist.end());
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < alllists; i++) {
 		if (scorelist[i] == finalscore) rank = i+1;
 	}
 	for (int i = 0; i < 5 && i<alllists; i++) {
@@ -32,7 +33,7 @@ void Gameoverscene::output() {
 
 void Gameoverscene::update(float mt) {
 	exittime += mt;
-	if(exittime > 2) 	Director::getInstance()->replaceScene(Hellotetris::create());
+	if(exittime > 4) 	Director::getInstance()->replaceScene(Hellotetris::create());
 }
 
  void Gameoverscene::getfinal(int i, int j) {
@@ -61,6 +62,18 @@ bool Gameoverscene::init() {
 	yourrank = Label::create("Your rank : " + to_string(rank), "Maiandra GD", 30);
 	yourrank->setPosition(Vec2(size.width / 2, size.height / 2 - 100));
 	this->addChild(yourrank);
+
+	auto button4 = ui::Button::create("Back.png", "Back-1.png", "Back-1.png");
+	button4->setPosition(Vec2(size.width - button4->getCustomSize().width, 0 + button4->getCustomSize().height));
+	button4->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
+		switch (type) {
+		case ui::Widget::TouchEventType::ENDED: {
+			Director::getInstance()->replaceScene(Hellotetris::create());
+			break;
+		}
+		}
+	});
+	this->addChild(button4, 1);
 
 	this->scheduleUpdate();
 
