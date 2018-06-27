@@ -8,6 +8,7 @@ USING_NS_CC;
 static int finalscore = 0;
 static int finalspeed = 0;
 
+
 class Gameoverscene :public Scene {
 public:
 	CREATE_FUNC(Gameoverscene);

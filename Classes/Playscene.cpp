@@ -92,14 +92,18 @@ void Playscene::reset() {
 		}
 	}
 
+	int end = 0;
 	for (int i = 0; i < 4; i++) {
+		
 		for (int j = 0; j < 10; j++) {
 			if (cplayer.isshow[i][j]) {
-				Sleep(200);
+				Sleep(200);		
 				Gameoverscene::getfinal(cplayer.score, orispeed);
 				Director::getInstance()->replaceScene(Gameoverscene::create());
+				end = 1; break;
 			}
 		}
+		if (end == 1) break;
 	}
 
 	cplayer.cnum = cplayer.snum;

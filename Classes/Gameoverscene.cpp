@@ -9,10 +9,11 @@
 #include <algorithm>
 using namespace std;
 USING_NS_CC;
-ofstream out("Scoreslist.txt", fstream::out);
-ifstream in("Scoreslist.txt");
+
 
 void Gameoverscene::output() {
+	ofstream out;
+	ifstream in("Scoreslist.txt", ifstream::app);
 	int score;
 	int alllists = 1;
 	vector<int> scorelist;
@@ -22,13 +23,14 @@ void Gameoverscene::output() {
 	}
 	scorelist.push_back(finalscore);
 	sort(scorelist.begin(), scorelist.end());
-	for (int i = 0; i < alllists; i++) {
-		if (scorelist[i] == finalscore) rank = i+1;
+	for (int i = alllists; i > 0; i--) {
+		if (scorelist[i-1] == finalscore) rank = alllists-i+1;
 	}
-	for (int i = 0; i < 5 && i<alllists; i++) {
-		if (scorelist[i] < 0) scorelist[i] = 0;
-		out << scorelist[i] << endl;
+	out.open("Scoreslist.txt",fstream::out);
+	for (int i = alllists; i>0; i--) {
+		out << scorelist[i-1] << endl;
 	}
+
 }
 
 void Gameoverscene::update(float mt) {
@@ -39,7 +41,6 @@ void Gameoverscene::update(float mt) {
  void Gameoverscene::getfinal(int i, int j) {
 	finalscore = i;
 	finalspeed = j;
-	
 }
 
 bool Gameoverscene::init() {

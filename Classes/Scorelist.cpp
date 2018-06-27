@@ -9,7 +9,6 @@
 #include "ui/Cocosgui.h"
 using namespace std;
 USING_NS_CC;
-ifstream inn("Scoreslist.txt", ifstream::in);
 
  bool Scorelist::init() {
 	 int scores = 0;
@@ -22,7 +21,7 @@ ifstream inn("Scoreslist.txt", ifstream::in);
 		 background->setPosition(Vec2(512, 384));
 		 this->addChild(background);
 	 }
-
+	 fstream inn("Scoreslist.txt", fstream::in);
 	 while(inn >> scores) {
 		 list.push_back(Label::create(to_string(scores), "Maiandra GD", 56));
 		 list[i]->setPosition(Vec2(size.width / 2, x));
@@ -30,6 +29,7 @@ ifstream inn("Scoreslist.txt", ifstream::in);
 		 i++;
 		 x -= 80;
 	 }
+	 inn.close();
 
 	 auto button2 = ui::Button::create("Back.png", "Back-1.png", "Back-1.png");
 	 button2->setPosition(Vec2(size.width / 2, 50));
