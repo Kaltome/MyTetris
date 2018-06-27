@@ -68,7 +68,7 @@ bool Gameoverscene::init() {
 	button4->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
 		case ui::Widget::TouchEventType::ENDED: {
-			Director::getInstance()->replaceScene(Hellotetris::create());
+			Director::getInstance()->replaceScene(TransitionCrossFade::create(0.3f, Hellotetris::create()));
 			break;
 		}
 		}

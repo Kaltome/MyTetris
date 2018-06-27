@@ -29,7 +29,6 @@ public:
 	void checkup(Ctrlsquare& cplayer);
 	bool checkdown(Ctrlsquare& cplayer);
 private:
-	int gameovernum = 0;
 	Ctrlsquare player1;
 	Ctrlsquare player2;
 	double downspeed1;
@@ -44,8 +43,7 @@ private:
 	bool isgameover1 = 0;
 	bool isgameover2 = 0;
 	double time = 0;
+	int ispause = 1;
 };
-
-
 
 #endif

@@ -15,7 +15,7 @@ void Playscene2::getdspeed(double i) {
 
 int  Playscene2::addscore(Ctrlsquare& cplayer) {
 	if (time == 0) return 0;
-	return cplayer.cleanedrows / time * 120 + dorispeed;
+	return cplayer.cleanedrows / time * 50 + dorispeed;
 }
 
 void Playscene2::cleanrow(Ctrlsquare& cplayer,int crow) {
@@ -66,6 +66,20 @@ bool Playscene2::checkgemeover(Ctrlsquare& cplayer) {
 }
 
 void Playscene2::controlkeyevent1() {
+	auto pausegame2 = EventListenerKeyboard::create();
+	pausegame2->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event * event) {
+		if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) ispause++;
+		if (ispause % 2) {
+			if (!player1.isloss)this->schedule(schedule_selector(Playscene2::update1));
+			if (!player2.isloss)this->schedule(schedule_selector(Playscene2::update2));
+		}
+		else {
+			if (!player1.isloss)this->unschedule(schedule_selector(Playscene2::update1));
+			if (!player2.isloss)this->unschedule(schedule_selector(Playscene2::update2));
+		}
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(pausegame2, this);
+
 	auto leftmove = EventListenerKeyboard::create();
 	leftmove->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event * event) {
 		if (keyCode == EventKeyboard::KeyCode::KEY_A)
@@ -240,7 +254,7 @@ bool Playscene2::init() {
 	button4->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
 		case ui::Widget::TouchEventType::ENDED: {
-			Director::getInstance()->replaceScene(Hellotetris::create());
+			Director::getInstance()->replaceScene(TransitionCrossFade::create(0.3f, Hellotetris::create()));
 			break;
 		}
 		}
@@ -419,8 +433,8 @@ void Playscene2::update1(float mt1) {
 				}
 			}
 			player1.gameoverbg->setVisible(255);
-			gameovernum++;
-			if (gameovernum == 2) {
+			player1.isloss = 1;
+			if (player1.isloss&&player2.isloss) {
 				Sleep(200);
 				TpGameover::getfinals(player1.score, player2.score);
 				Director::getInstance()->replaceScene(TpGameover::create());
@@ -487,8 +501,8 @@ void Playscene2::update2(float mt2) {
 				}
 			}
 			player2.gameoverbg->setVisible(255);
-			gameovernum++;
-			if (gameovernum == 2) {
+			player2.isloss = 1;
+			if (player1.isloss&&player2.isloss) {
 				Sleep(200);
 				TpGameover::getfinals(player1.score, player2.score);
 				Director::getInstance()->replaceScene(TpGameover::create());

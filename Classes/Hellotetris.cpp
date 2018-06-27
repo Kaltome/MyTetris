@@ -23,7 +23,7 @@ bool Hellotetris::init() {
 	button1->setPosition(Vec2(size.width/2, size.height/2-75));
 	button1->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
-		case ui::Widget::TouchEventType::ENDED: Director::getInstance()->replaceScene(Choose::create());
+		case ui::Widget::TouchEventType::ENDED: Director::getInstance()->replaceScene(TransitionCrossFade::create(0.3f,Choose::create()));
 			break;
 		}
 	});
@@ -44,13 +44,11 @@ bool Hellotetris::init() {
 	button3->setPosition(Vec2(size.width / 2, size.height / 2 - 175));
 	button3->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
-		case ui::Widget::TouchEventType::ENDED: Director::getInstance()->replaceScene(Scorelist::create());
+		case ui::Widget::TouchEventType::ENDED: Director::getInstance()->replaceScene(TransitionCrossFade::create(0.3f, Scorelist::create()));
 			break;
 		}
 	});
 	this->addChild(button3, 3);
-
-
 
 	return true;
 }

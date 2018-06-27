@@ -52,7 +52,7 @@ bool Choosenum::init() {
 	button4->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
 		case ui::Widget::TouchEventType::ENDED: {
-			Director::getInstance()->replaceScene(Choose::create());
+			Director::getInstance()->replaceScene(TransitionCrossFade::create(0.3f, Choose::create()));
 			break;
 		}
 		}

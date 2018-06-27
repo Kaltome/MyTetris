@@ -46,6 +46,4 @@ private:
 	//int snum;						//显示的下一个方块
 
 };
-
-
 #endif // !__Playscene_H__

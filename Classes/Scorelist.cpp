@@ -31,11 +31,11 @@ ifstream inn("Scoreslist.txt", ifstream::in);
 		 x -= 80;
 	 }
 
-	 auto button2 = ui::Button::create("Exit.png", "Exit-1.png", "Exit-1.png");
+	 auto button2 = ui::Button::create("Back.png", "Back-1.png", "Back-1.png");
 	 button2->setPosition(Vec2(size.width / 2, 50));
 	 button2->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		 switch (type) {
-		 case ui::Widget::TouchEventType::ENDED: Director::getInstance()->replaceScene(Hellotetris::create());
+		 case ui::Widget::TouchEventType::ENDED: Director::getInstance()->replaceScene(TransitionCrossFade::create(0.3f, Hellotetris::create()));
 			 break;
 		 }
 	 });

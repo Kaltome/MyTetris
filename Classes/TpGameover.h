@@ -18,6 +18,4 @@ private:
 	double times = 0;
 
 };
-
-
 #endif

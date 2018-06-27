@@ -27,7 +27,7 @@ bool Choose::init() {
 	button1->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
 			case ui::Widget::TouchEventType::ENDED: {
-			Director::getInstance()->replaceScene(Choosenum::create());
+			Director::getInstance()->replaceScene(TransitionCrossFade::create(0.3f, Choosenum::create()));
 			Playscene::getspeed(1);
 			Playscene2::getdspeed(1);
 			break; 
@@ -41,7 +41,7 @@ bool Choose::init() {
 	button2->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
 		case ui::Widget::TouchEventType::ENDED: {
-			Director::getInstance()->replaceScene(Choosenum::create());
+			Director::getInstance()->replaceScene(TransitionCrossFade::create(0.3f, Choosenum::create()));
 			Playscene::getspeed(2);
 			Playscene2::getdspeed(2);
 			break;
@@ -55,7 +55,7 @@ bool Choose::init() {
 	button3->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
 		case ui::Widget::TouchEventType::ENDED: {
-			Director::getInstance()->replaceScene(Choosenum::create());
+			Director::getInstance()->replaceScene(TransitionCrossFade::create(0.3f, Choosenum::create()));
 			Playscene::getspeed(3);
 			Playscene2::getdspeed(3);
 			break;
@@ -69,7 +69,7 @@ bool Choose::init() {
 	button4->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
 		switch (type) {
 		case ui::Widget::TouchEventType::ENDED: {
-			Director::getInstance()->replaceScene(Hellotetris::create());
+			Director::getInstance()->replaceScene(TransitionCrossFade::create(0.3f, Hellotetris::create()));
 			break;
 		}
 		}

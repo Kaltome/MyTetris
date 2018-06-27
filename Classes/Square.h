@@ -5,7 +5,6 @@
 #include "Shape.h"
 USING_NS_CC;
 
-
 class Ctrlsquare :public Shape {
 public:
 	int score = 0;
@@ -19,6 +18,7 @@ public:
 	int controly = 0;
 	int cnum;
 	int snum;
+	bool isloss = 0;
 };
 
 #endif // !__Square_H__
