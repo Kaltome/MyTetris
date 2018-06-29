@@ -1,3 +1,8 @@
+/**************************************************************
+
+						Ë«ÈËÓÎÏ·³¡¾°
+
+***************************************************************/
 #include "Playscene2.h"
 #include "cocos2d.h"
 #include "Shape.h"
@@ -15,7 +20,7 @@ void Playscene2::getdspeed(double i) {
 
 int  Playscene2::addscore(Ctrlsquare& cplayer) {
 	if (time == 0) return 0;
-	return cplayer.cleanedrows / time * 50 + dorispeed;
+	return cplayer.cleanedrows / time * 120 + dorispeed;
 }
 
 void Playscene2::cleanrow(Ctrlsquare& cplayer,int crow) {
@@ -104,7 +109,7 @@ void Playscene2::controlkeyevent1() {
 		}
 	};
 	downmove->onKeyReleased = [&](EventKeyboard::KeyCode keyCode, Event * event) {
-		if (keyCode == EventKeyboard::KeyCode::KEY_S); downspeed1 = dorispeed;
+		if (keyCode == EventKeyboard::KeyCode::KEY_S) downspeed1 = dorispeed;
 	};
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(downmove, this);
 
@@ -141,7 +146,7 @@ void Playscene2::controlkeyevent2() {
 		}
 	};
 	downmove->onKeyReleased = [&](EventKeyboard::KeyCode keyCode, Event * event) {
-		if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW); downspeed2 = dorispeed;
+		if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)downspeed2 = dorispeed;
 	};
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(downmove, this);
 

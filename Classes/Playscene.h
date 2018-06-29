@@ -14,36 +14,26 @@ public:
 	CREATE_FUNC(Playscene);
 	virtual bool init();
 	virtual void update(float mt);
-	static void getspeed(double i);
+	static void getspeed(double i);		
 	void controlkeyevent();
 	int  addscore();
 	void cleanrow(int crow);
 	void reset();
-	void rotate();					//旋转图形
+	void rotate();					
 	bool checkhit();
-	void checkleft();				//检查与左边墙壁有无碰撞
+	void checkleft();				
 	void checkright();
 	void checkup();
 	bool checkdown();
 
 private:
-	Ctrlsquare cplayer;
-	int speedup = 15;
-	//int score = 0;
-	//Label* scorelabel;
-	//int cleanedrows = 0;
-	Sprite* square[24][10];			//俄罗斯方块
-	//bool isshow[24][10];			//确定要显示那个方块
-	Sprite* next[4][4];				//显示下一个的方块
-	//bool nextshow[4][4];			//显示下一个方块
-	//int controlx = 3;				//确定移动方块的横坐标
-	//int controly = 0;				//控制方块下落
-	double time = 0;
-	double pretime = 0;
-	int ispause = 1;
-	//Shape cshape; 
-	//int cnum;			//控制的方块
-	//int snum;						//显示的下一个方块
+	Ctrlsquare cplayer;				//玩家（一名）
+	int speedup = 15;				//加速下落模式
+	Sprite* square[24][10];			//俄罗斯方块精灵
+	Sprite* next[4][4];				//下一个方块精灵
+	double time = 0;				//游戏时长
+	double pretime = 0;				//两次下落间隔的时间
+	int ispause = 1;				//记录暂停
 
 };
 #endif // !__Playscene_H__

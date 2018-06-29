@@ -13,15 +13,15 @@ class Gameoverscene :public Scene {
 public:
 	CREATE_FUNC(Gameoverscene);
 	virtual bool init();
-	static void getfinal(int i, int j);
-	virtual void update(float mt);
-	void output();
+	static void getfinal(int i, int j);						
+	virtual void update(float mt);							
+	void output();											//文件读取（排行榜）
 private: 
-	double exittime = 0;
-	Label * yourscore;
+	double exittime = 0;									//记录自动回到主界面时间				
+	Label * yourscore;										
 	Label * yourrank;
-	Sprite * youloss;
-	int rank = 0;
+	Sprite * youloss;										//标题
+	int rank = 0;											//排名
 
 };
 

@@ -29,7 +29,7 @@ public:
 	void checkup(Ctrlsquare& cplayer);
 	bool checkdown(Ctrlsquare& cplayer);
 private:
-	Ctrlsquare player1;
+	Ctrlsquare player1;//Íæ¼Ò1
 	Ctrlsquare player2;
 	double downspeed1;
 	double downspeed2;

@@ -1,3 +1,8 @@
+/**************************************************************
+
+					选择单/双人模式场景
+
+***************************************************************/
 #include"cocos2d.h"
 #include"Choose.h"
 #include "Playscene.h"
@@ -10,7 +15,7 @@ using namespace std;
 USING_NS_CC;
 
 bool Choosenum::init() {
-	
+	//背景图片
 	auto background = Sprite::create("BG.png");
 	if (background != nullptr) {
 		background->setPosition(Vec2(512, 384));
@@ -19,10 +24,12 @@ bool Choosenum::init() {
 
 	auto size = Director::getInstance()->getVisibleSize();
 
+	//标题
 	auto ntitle = Sprite::create("Title.png");
 	ntitle->setPosition(Vec2(size.width / 2, size.height / 2 + 150));
 	this->addChild(ntitle);
 
+	//选择单双人模式按钮
 	auto button1 = ui::Button::create("Single-player  Mode.png", "Single-player  Mode-1.png", "Single-player  Mode-1.png");
 	button1->setPosition(Vec2(size.width / 2, size.height / 2 - 120));
 	button1->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {
@@ -47,6 +54,7 @@ bool Choosenum::init() {
 	});
 	this->addChild(button2, 1);
 
+	//返回
 	auto button4 = ui::Button::create("Back.png", "Back-1.png", "Back-1.png");
 	button4->setPosition(Vec2(size.width - button4->getCustomSize().width, 0 + button4->getCustomSize().height));
 	button4->addTouchEventListener([&](Ref* s, ui::Widget::TouchEventType type) {

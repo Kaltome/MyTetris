@@ -1,3 +1,8 @@
+/**************************************************************
+
+						单人游戏场景
+
+***************************************************************/
 #include "Playscene.h"
 #include "cocos2d.h"
 #include "Shape.h"
@@ -9,16 +14,20 @@
 using namespace cocos2d;
 using namespace std;
 
+//获取下落速度（难度）
 void Playscene::getspeed(double i) {
 	downspeed = i;
 	orispeed = i;
 }
 
+//分数系统
 int  Playscene::addscore() {
 	if (time == 0) return 0;
-	return cplayer.cleanedrows / time * 150 + 1;
+	return cplayer.cleanedrows / time * 120 + orispeed;
 }
 
+//键盘监听
+//暂停，左移，右移，加速下滑（恢复原速度），旋转
 void Playscene::controlkeyevent() {
 	auto pausegame1 = EventListenerKeyboard::create();
 	pausegame1->onKeyPressed = [&](EventKeyboard::KeyCode keyCode, Event * event) {
@@ -64,6 +73,7 @@ void Playscene::controlkeyevent() {
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(shaperotate, this);
 }
 
+//清行
 void Playscene::cleanrow(int crow) {
 	cplayer.cleanedrows++;
 	for (int i = crow; i > 0; i--) {
@@ -73,6 +83,13 @@ void Playscene::cleanrow(int crow) {
 	}
 }
 
+//RESET
+//记录玩家积累的方块
+//判断是否清行
+//判断游戏是否结束，并传递分数
+//切换下一个控制，显示的方块
+//重置横纵坐标
+//顶端4行不显示
 void Playscene::reset() {
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
@@ -120,6 +137,7 @@ void Playscene::reset() {
 	cplayer.controly = 0;
 }
 
+//判断控制的方块是否与积累的方块碰撞
 bool Playscene::checkhit() {
 	int hit = 0;
 	for (int i = 3; i >= 0; i--) {
@@ -132,6 +150,7 @@ bool Playscene::checkhit() {
 	return hit;
 }
 
+//判断方块与下边界的碰撞
 bool Playscene::checkdown() {
 	int downline = 0;
 	int findend = 0;
@@ -157,10 +176,12 @@ bool Playscene::checkdown() {
 	return (ishit|| cplayer.controly == 23 - 3 + downline);
 }
 
+//判断方块与上边界的碰撞（测试用）
 void Playscene::checkup() {
 	if (cplayer.controly < 0) cplayer.controly = 0;
 }
 
+//判断方块与左边界的碰撞
 void Playscene::checkleft() {
 	int leftline = 0;
 	for (int i = 0; i < 4; i++) {
@@ -177,6 +198,7 @@ void Playscene::checkleft() {
 	if (cplayer.controlx < 0 - leftline) cplayer.controlx = 0 - leftline;
 }
 
+//判断方块与右边界的碰撞
 void Playscene::checkright() {
 	int rightline = 0;
 	for (int i = 3; i >= 0; i--) {
@@ -193,6 +215,7 @@ void Playscene::checkright() {
 	if (cplayer.controlx > 9 - 3 + rightline) cplayer.controlx = 9 - 3 + rightline;
 }
 
+//控制旋转
 void Playscene::rotate() {
 	Ctrlsquare copy = cplayer;
 	if (cplayer.cnum == 6) return;
@@ -204,23 +227,27 @@ void Playscene::rotate() {
 	if (checkhit()) cplayer = copy;
 }
 
+
 bool Playscene::init() {
 
-	cplayer.cnum = CCRANDOM_0_1() * 7;
+	//随机生成下一个方块
+	cplayer.cnum = CCRANDOM_0_1() * 7;								
 	cplayer.snum = CCRANDOM_0_1() * 7;
 
-
+	//背景
 	auto background = Sprite::create("BG.png");
 	if (background != nullptr) {
 		background->setPosition(Vec2(512, 384));
 		this->addChild(background);
 	}
 
+	//俄罗斯方块背景
 	auto squarebg = Sprite::create("Squarebg.png");
 	squarebg->setAnchorPoint(Vec2(0, 0));
 	squarebg->setPosition(Vec2(104, -12));
 	this->addChild(squarebg);
 
+	//俄罗斯方块精灵（游戏区）
 	int squarex = 112, squarey = 876;
 	for (int i = 0; i < 24; i++) {
 		for (int j = 0; j < 10; j++) {
@@ -234,6 +261,7 @@ bool Playscene::init() {
 		squarey -= 36;
 	}
 
+	//俄罗斯方块精灵（显示下一个方块区）
 	int showx = 656, showy = 448;
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
@@ -247,11 +275,13 @@ bool Playscene::init() {
 		showy -= 36;
 	}
 
+	//分数表
 	cplayer.scorelabel = Label::create("Score : "+to_string(cplayer.score), "Maiandra GD", 36);
 	cplayer.scorelabel->setAnchorPoint(Vec2(0, 0));
 	cplayer.scorelabel->setPosition(Vec2(648, 624));
 	this->addChild(cplayer.scorelabel);
 
+	//显示区显示下一个方块
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
 			if (cplayer.shape[cplayer.snum][i][j]) next[i][j]->setVisible(200);
@@ -259,8 +289,10 @@ bool Playscene::init() {
 		}
 	}
 
+	//键盘监听
 	controlkeyevent();
 
+	//返回按钮
 	auto size = Director::getInstance()->getVisibleSize();
 	auto button4 = ui::Button::create("Back.png", "Back-1.png", "Back-1.png");
 	button4->setPosition(Vec2(size.width - button4->getCustomSize().width, 0 + button4->getCustomSize().height));
@@ -274,11 +306,18 @@ bool Playscene::init() {
 	});
 	this->addChild(button4, 1);
 	
+	//update
 	this->scheduleUpdate();
 
 	return true;
 }
 
+//UPDATE，将元素变化刷新到屏幕上
+//分数变化
+//控制方块的下落，控制方块位置，形状的变化，并检查是否会发生碰撞
+//积累的方块的变化
+//下落碰撞后调用reset函数
+//顶端不显示方块
 void Playscene::update(float mt) {
 
 	cplayer.score += addscore();

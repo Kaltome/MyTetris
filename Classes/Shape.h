@@ -2,6 +2,7 @@
 #ifndef __Shape_H__
 #define __Shape_H__
 
+//ÆßÖÖ·½¿éÊôÐÔ
 class Shape {
 
 public:
