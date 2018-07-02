@@ -32,7 +32,7 @@ void Gameoverscene::output() {
 		if (scorelist[i-1] == finalscore) rank = alllists-i+1;			//寻找排名（大到小）
 	}
 	out.open("Scoreslist.txt",fstream::out);							//输出
-	for (int i = alllists; i>0; i--) {
+	for (int i = alllists; i>0 && i>alllists - 6; i--) {
 		out << scorelist[i-1] << endl;
 	}
 
